@@ -196,11 +196,12 @@ export function logout() {
   }
 }
 
+//SPRING
 export function signup(first_name, last_name, username, password) {
   
   
   return function(dispatch){
-      axios.post('http://localhost:3002/api/signup', {
+      axios.post('http://localhost:8082/api/signup', {
             
                   first_name,last_name,username,password
             
@@ -209,7 +210,7 @@ export function signup(first_name, last_name, username, password) {
                                 
                dispatch({
                    type: "SIGNUP",
-                   payload: response.data.status
+                   payload: response.data
               })
              
             })
@@ -263,7 +264,7 @@ export function upload(username,file,isFile,parentId) {
 }
 
 //Upload folder 
-export function uploadFolder(file_name,isFile,parentId) {
+export function uploadFolder(file_name,isFile,parentId,username) {
 
   console.log('UPLOAD FOLDER '+ file_name);
 
@@ -273,17 +274,17 @@ export function uploadFolder(file_name,isFile,parentId) {
 
         axios({
               method:'post',
-              url:'http://localhost:3002/api/uploadFolder',
+              url:'http://localhost:8082/api/uploadFolder',
               withCredentials: true,
               headers: {'Accept': 'application/json','Content-Type': 'application/json'},
-              data: {file_name,isFile,parentId}
+              data: {file_name,isFile,parentId,username}
            })
          .then((response) => {
 
               console.log('TEST', response.data);
               dispatch({
                    type: "UPLOAD",
-                   payload: response.data.files
+                   payload: response.data
               })
 
           }).catch((err) => {
@@ -331,6 +332,7 @@ export function createGroup(groupName,isFile,parentId) {
 }
 
 //Set All Files
+//SPRING
 export function setFiles(parentId) {
 
   console.log('AMAN SET FILES ' + parentId);
@@ -654,34 +656,32 @@ export function setProfile(username, bio, work, education, mobile, interest) {
 }
 
 //Get Profile Details
+//SPRING
 export function getProfile(username) {
 
   console.log('PROFILE USERNAME ' + username);
 
   return function(dispatch){
-        fetch(`http://localhost:3002/api/getProfile`, {
-          method: 'POST',
-          headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json'
-        },
-        credentials:'include',
-          
-        })
-        .then(res => res.json())
-        .then(data => 
-
-          
-          dispatch({
+        axios({
+              method:'post',
+              url:'http://localhost:8082/api/getProfile',
+              withCredentials: true,
+              headers: {'Accept': 'application/json','Content-Type': 'application/json'},
+              data: username
+              
+           })
+         .then((response) => {
+              console.log('AMANNNNNNNNN')
+              console.log(response);
+              dispatch({
                    type: "GET_PROFILE",
-                   payload: data.details
-            })
+                   payload: response.data
+              }) 
 
-        )
-        .catch(error => {
-            console.log("This is error");
-            return error;
-        });
+          }).catch((error) => {
+                  console.log("This is error");
+                  return error;
+             })
       
   }
 }

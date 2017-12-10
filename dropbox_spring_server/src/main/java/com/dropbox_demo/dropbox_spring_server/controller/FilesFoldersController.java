@@ -1,9 +1,12 @@
 package com.dropbox_demo.dropbox_spring_server.controller;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,18 +36,44 @@ public class FilesFoldersController {
 	@Autowired
 	private UserInfoService userInfoService;
 	
-    @PostMapping(path="/setFiles")
+    
+	
+	@PostMapping(path="/signup",consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<?> signup(@RequestBody String userDetails) throws JSONException {
+        // This returns a JSON with the users
+		
+		JSONObject jsonObject = new JSONObject(userDetails);
+    	System.out.println("-----------Request Received from " + jsonObject);
+    	
+    	String username = jsonObject.getString("username");
+    	String password = jsonObject.getString("password");
+    	String first_name = jsonObject.getString("first_name");
+    	String last_name = jsonObject.getString("last_name");
+    	
+    	dropbox_userinfo user = new dropbox_userinfo();
+    	user.setUsername(username);
+    	user.setPassword(password);
+    	user.setFirst_name(first_name);
+    	user.setLast_name(last_name);
+    	
+    	userInfoService.addUser(user);
+    	
+    	
+    	return new ResponseEntity("true",HttpStatus.OK);
+    }
+	
+	
+	
+	@PostMapping(path="/setFiles")
     public @ResponseBody List<dropbox_userfiles> setFiles(@RequestBody String parentId) {
         // This returns a JSON with the users
     	System.out.println("-----------Request Received from " + parentId);
     	
     	List<dropbox_userfiles> files = filesFoldersService.setFiles(parentId);
-    	
-    	for(dropbox_userfiles file : files) {
-            System.out.println(file.getFile_name());
-        }
+
     	return files;
     }
+   
     
     @PostMapping(path="/getProfile")
     public @ResponseBody List<dropbox_userinfo> getProfile(@RequestBody String username) {
@@ -57,6 +86,51 @@ public class FilesFoldersController {
             System.out.println(inf.getFirst_name());
         }
     	return info;
+    }
+    
+    
+    @PostMapping(path="/uploadFolder",consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<?> uploadFolder(@RequestBody String userDetails) throws JSONException {
+        // This returns a JSON with the users
+		
+		JSONObject jsonObject = new JSONObject(userDetails);
+    	System.out.println("-----------Request Received from " + jsonObject);
+    	
+    	String username = jsonObject.getString("username");
+    	String isFile = jsonObject.getString("isFile");
+    	String file_name = jsonObject.getString("file_name");
+    	String parentId = jsonObject.getString("parentId");
+    	
+    	dropbox_userfiles files = new dropbox_userfiles();
+    	//String id = Double.toString(Calendar.getInstance().getTimeInMillis());
+    	
+    	Long l = new Long(Calendar.getInstance().getTimeInMillis());
+        double id = (double)l;
+        System.out.println(id);
+    	
+    	files.setUsername(username);
+    	files.setFile_name(file_name);
+    	files.setIsFile(isFile);
+    	files.setParentId(parentId);
+    	files.setFileId(id);
+    	files.setIsStarred(false);
+    	files.setIsOwner(true);
+    	files.setSharedWith(new ArrayList<>());
+    	
+    	filesFoldersService.addFileFolder(files);
+
+    	/*dropbox_userinfo user = new dropbox_userinfo();
+    	user.setUsername(username);
+    	user.setPassword(password);
+    	user.setFirst_name(first_name);
+    	user.setLast_name(last_name);
+    	
+    	userInfoService.addUser(user);*/
+    	
+    	List<dropbox_userfiles> files1 = filesFoldersService.setFiles(parentId);
+    	
+    	
+    	return new ResponseEntity(files1,HttpStatus.OK);
     }
     
 	

@@ -238,7 +238,7 @@ class Home extends Component {
                                                           </div>
                                                           <div className="modal-footer">
                                                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                            <button type="button" className="btn btn-success" onClick={() => this.props.uploadFolder(document.getElementById('folderName').value,'0',username)}>Create</button>
+                                                            <button type="button" className="btn btn-success" onClick={() => this.props.uploadFolder(document.getElementById('folderName').value,'0',username,username)}>Create</button>
                                                           </div>
                                                         </div>
                                                       </div>
@@ -260,7 +260,7 @@ function mapDispatchToProps(dispatch) {
     return {
         logout : () => dispatch(logout()),
         upload : (username,file,isFile,parentId) => dispatch(upload(username,file,isFile,parentId)),
-        uploadFolder : (file_name,isFile,parentId) => dispatch(uploadFolder(file_name,isFile,parentId)),
+        uploadFolder : (file_name,isFile,parentId,username) => dispatch(uploadFolder(file_name,isFile,parentId,username)),
         setFiles: (parentId) => dispatch(setFiles(parentId)),
         setStar: (file_id,file_name) => dispatch(setStar(file_id,file_name)),
         unsetStar: (file_id,file_name) => dispatch(unsetStar(file_id,file_name)),

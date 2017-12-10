@@ -19,5 +19,10 @@ public class UserInfoService {
 	public List<dropbox_userinfo> getProfile(String username){
         return userInfoRepository.findByUsername(username);
     }
+	
+	public void addUser(dropbox_userinfo user){
+		userInfoRepository.save(user);
+    }
+
 
 }
