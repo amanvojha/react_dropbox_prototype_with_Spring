@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,39 +31,12 @@ import com.dropbox_demo.dropbox_spring_server.entity.dropbox_userinfo;
 @ContextConfiguration(classes = DropboxSpringServerApplication.class)
 @SpringBootTest
 public class DropboxSpringServerApplicationTests {
-
-	/*@Test
-	public void contextLoads() {
-	}*/
 	
 	private MockMvc mockMvc;
-
-	
-	private String attribute = "amano";
-	private String attribute2 = "{\"email\":\"palash\"}";
-	private String attribute3 = "{\"email\":\"palash\",\"groupname\":\"palash\" }";
-	private String attribute4 = "{\"email\":\"palash\",\"directory\":\"palash\" }";
-	private String attribute5 = "{\"email\":\"palash\",\"directory\":\"palash\"  , \"foldername\" : \"palash\" }";
-	
 	
 	@Autowired
     private WebApplicationContext wac;
-	
-	/*@Before
-	public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-	}*/
-	
-	
-	
-	/*@Test
-	public void getActivity() throws Exception {
-		mockMvc.perform(post("/getActivity")
-				.content(attribute)
-				.contentType(MediaType.TEXT_HTML))				
-				.andExpect(status().isOk()) ; 
-	}*/
-	
+
 	
 	@Bean
 	public static RestTemplate restTemplate(){
@@ -101,5 +75,95 @@ public class DropboxSpringServerApplicationTests {
 
         assertEquals(200, res.getStatusCodeValue());
     }
+    
+    @Test
+    public void signup() {
+    	dropbox_userinfo user = new dropbox_userinfo();
+    	
+    	double random = Math.random();
+    	String username = random + "@gmail.com";
+    	
+    	user.setUsername(username);
+    	user.setPassword("root");
+    	user.setFirst_name("Sample");
+    	user.setLast_name("Sample");
+        ResponseEntity<String> res = restTemplate().postForEntity("http://localhost:8082/api/signup", user, String.class);
+
+        assertEquals(200, res.getStatusCodeValue());
+    }
+    
+    @Test
+    public void uploadFolder() {
+    	
+    	dropbox_userfiles files = new dropbox_userfiles();
+    	
+    	double random = Math.random();
+    	String file_name = random + "file";
+    	
+    	files.setUsername("amano");
+    	files.setFile_name(file_name);
+    	files.setIsFile("0");
+    	files.setParentId("amano");
+    	ResponseEntity<dropbox_userfiles[]> res = restTemplate().postForEntity("http://localhost:8082/api/uploadFolder", files, dropbox_userfiles[].class);
+
+        assertEquals(200, res.getStatusCodeValue());
+    }
+    
+    @Test
+    public void getAct() {
+    	String params = "amano";
+        ResponseEntity<dropbox_userinfo[]> res = restTemplate().postForEntity("http://localhost:8082/api/getProfile", params, dropbox_userinfo[].class);
+
+        assertEquals(200, res.getStatusCodeValue());
+    }
+    
+    @Test
+    public void getStar() {
+    	String params = "amano";
+        ResponseEntity<dropbox_usergroups[]> res = restTemplate().postForEntity("http://localhost:8082/api/getGroup", params, dropbox_usergroups[].class);
+
+        assertEquals(200, res.getStatusCodeValue());
+    }
+    
+    @Test
+    public void star() {
+    	dropbox_userinfo user = new dropbox_userinfo();
+    	
+    	double random = Math.random();
+    	String username = random + "@gmail.com";
+    	
+    	user.setUsername(username);
+    	user.setPassword("root");
+    	user.setFirst_name("Sample");
+    	user.setLast_name("Sample");
+        ResponseEntity<String> res = restTemplate().postForEntity("http://localhost:8082/api/signup", user, String.class);
+
+        assertEquals(200, res.getStatusCodeValue());
+    }
+    
+    @Test
+    public void uploadFile() {
+    	
+    	dropbox_userfiles files = new dropbox_userfiles();
+    	
+    	double random = Math.random();
+    	String file_name = random + "file";
+    	
+    	files.setUsername("amano");
+    	files.setFile_name(file_name);
+    	files.setIsFile("0");
+    	files.setParentId("amano");
+    	ResponseEntity<dropbox_userfiles[]> res = restTemplate().postForEntity("http://localhost:8082/api/uploadFolder", files, dropbox_userfiles[].class);
+
+        assertEquals(200, res.getStatusCodeValue());
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 
 }

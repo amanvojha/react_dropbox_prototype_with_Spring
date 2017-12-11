@@ -633,6 +633,7 @@ export function getActivity(username) {
 }
 
 //Set Profile Details
+//SPRING
 export function setProfile(username, bio, work, education, mobile, interest) {
 
   console.log('PROFILE USERNAME ' + username);
@@ -640,7 +641,7 @@ export function setProfile(username, bio, work, education, mobile, interest) {
 
   return function(dispatch){
 
-    axios.post('http://localhost:3002/api/setProfile', {
+    axios.post('http://localhost:8082/api/setProfile', {
         
             username, bio, work, education, mobile, interest
           

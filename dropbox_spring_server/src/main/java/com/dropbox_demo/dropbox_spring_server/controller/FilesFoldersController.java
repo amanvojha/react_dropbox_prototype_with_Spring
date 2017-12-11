@@ -183,6 +183,34 @@ public class FilesFoldersController {
     	return new ResponseEntity(group1,HttpStatus.OK);
     }
     
+    @PostMapping(path="/setProfile",consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<?> setProfile(@RequestBody String userDetails) throws JSONException {
+        // This returns a JSON with the users
+		
+		JSONObject jsonObject = new JSONObject(userDetails);
+    	System.out.println("-----------Set Profile Received from " + jsonObject);
+    	
+    	String username = jsonObject.getString("username");
+    	String education = jsonObject.getString("education");
+    	String interest = jsonObject.getString("interest");
+    	String work = jsonObject.getString("work");
+    	String mobile = jsonObject.getString("mobile");
+    	String bio = jsonObject.getString("bio");
+    	
+    	dropbox_userinfo user = new dropbox_userinfo();
+    	user.setUsername(username);
+    	user.setEducation(education);
+    	user.setInterest(interest);
+    	user.setWork(work);
+    	user.setMobile(mobile);
+    	user.setBio(bio);
+    	
+    	userInfoService.updateUser(user);
+    	
+    	
+    	return new ResponseEntity("true",HttpStatus.OK);
+    }
+    
 	
 
 }
