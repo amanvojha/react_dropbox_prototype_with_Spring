@@ -264,6 +264,7 @@ export function upload(username,file,isFile,parentId) {
 }
 
 //Upload folder 
+//SPRING
 export function uploadFolder(file_name,isFile,parentId,username) {
 
   console.log('UPLOAD FOLDER '+ file_name);
@@ -297,8 +298,9 @@ export function uploadFolder(file_name,isFile,parentId,username) {
   }
 }
 
-//Upload folder 
-export function createGroup(groupName,isFile,parentId) {
+//Upload folder
+//SPRING 
+export function createGroup(username,groupName,isFile,parentId) {
 
   console.log('CREATE GROUP '+ groupName);
 
@@ -308,17 +310,17 @@ export function createGroup(groupName,isFile,parentId) {
 
         axios({
               method:'post',
-              url:'http://localhost:3002/api/createGroup',
+              url:'http://localhost:8082/api/createGroup',
               withCredentials: true,
               headers: {'Accept': 'application/json','Content-Type': 'application/json'},
-              data: {groupName,isFile,parentId}
+              data: {username,groupName,isFile,parentId}
            })
          .then((response) => {
 
               console.log('TEST', response.data);
               dispatch({
                    type: "GROUP",
-                   payload: response.data.files
+                   payload: response.data
               })
 
           }).catch((err) => {
@@ -384,7 +386,6 @@ export function setHomeFiles(username) {
              })
 
   }
-
 
 }
 
@@ -498,29 +499,30 @@ export function getStar() {
 
 }
 
-export function getGroup() {
+//SPRING
+export function getGroup(username) {
 
-  console.log('GET GROUP ');
+  console.log('GET GROUP ' + username);
 
   return function(dispatch){
 
           axios({
               method:'post',
-              url:'http://localhost:3002/api/getGroup',
+              url:'http://localhost:8082/api/getGroup',
               withCredentials: true,
               headers: {'Accept': 'application/json','Content-Type': 'application/json'},
-              
+              data: username
            })
          .then((response) => {
 
               
-              if(response.data.files==undefined){
+              if(response.data==undefined){
                   console.log('NO GROUPS')
               }
               else {
                 dispatch({
                      type: "GROUP",
-                     payload: response.data.files
+                     payload: response.data
                 })
               }   
 
@@ -599,18 +601,20 @@ export function deleteFile(username,file_id,file_name) {
 }
 
 //Get User Activity
-export function getActivity() {
+//SPRING
+export function getActivity(username) {
 
-  console.log('ACTIVITY USERNAME ');
+  console.log('ACTIVITY USERNAME ' + username);
   
 
   return function(dispatch){
 
     axios({
               method:'post',
-              url:'http://localhost:3002/api/getActivity',
+              url:'http://localhost:8082/api/getActivity',
               withCredentials: true,
-              headers: {'Accept': 'application/json','Content-Type': 'application/json'}
+              headers: {'Accept': 'application/json','Content-Type': 'application/json'},
+              data:username
               
            })
          .then((response) => {
@@ -618,7 +622,7 @@ export function getActivity() {
               
               dispatch({
                    type: "ACTIVITY",
-                   payload: response.data.files
+                   payload: response.data
               })  
 
           }).catch((err) => {
@@ -725,25 +729,6 @@ export function shareFile(file_id,sharedWith) {
       
   }
 
-/*  return function(dispatch){
-
-    axios.post('http://localhost:3002/api/shareFile', {
-        
-            username,file_id,file_name,sharedWith
-          
-          })
-         .then((response) => {
-
-              dispatch({
-                   type: "SHARE",
-                   payload: response.data.status
-              }) 
-
-          }).catch((err) => {
-
-             })
-
-  }*/
 }
 
 //Get Shared Files

@@ -19,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
+import com.dropbox_demo.dropbox_spring_server.entity.dropbox_useractivity;
 import com.dropbox_demo.dropbox_spring_server.entity.dropbox_userfiles;
+import com.dropbox_demo.dropbox_spring_server.entity.dropbox_usergroups;
 import com.dropbox_demo.dropbox_spring_server.entity.dropbox_userinfo;
 import com.dropbox_demo.dropbox_spring_server.repository.UserInfoRepository;
 import com.dropbox_demo.dropbox_spring_server.service.FilesFoldersService;
+import com.dropbox_demo.dropbox_spring_server.service.UserActivityService;
+import com.dropbox_demo.dropbox_spring_server.service.UserGroupsService;
 import com.dropbox_demo.dropbox_spring_server.service.UserInfoService;
 
 @Controller    // This means that this class is a Controller
@@ -35,6 +38,10 @@ public class FilesFoldersController {
 	private FilesFoldersService filesFoldersService;
 	@Autowired
 	private UserInfoService userInfoService;
+	@Autowired
+	private UserActivityService userActivityService;
+	@Autowired
+	private UserGroupsService userGroupsService;
 	
     
 	
@@ -88,6 +95,26 @@ public class FilesFoldersController {
     	return info;
     }
     
+    @PostMapping(path="/getActivity")
+    public @ResponseBody ResponseEntity<?> getActivity(@RequestBody String username) {
+        // This returns a JSON with the users
+    	System.out.println("-----------Activity request Received from " + username);
+    	
+    	List<dropbox_useractivity> activity = userActivityService.getActivity(username);
+    	
+    	return new ResponseEntity(activity,HttpStatus.OK);
+    }
+    
+    @PostMapping(path="/getGroup")
+    public @ResponseBody List<dropbox_usergroups> getGroup(@RequestBody String username) {
+        // This returns a JSON with the users
+    	System.out.println("-----------Groups request Received from " + username);
+    	
+    	List<dropbox_usergroups> groups = userGroupsService.getGroup(username);
+    	
+    	return groups;
+    }
+    
     
     @PostMapping(path="/uploadFolder",consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<?> uploadFolder(@RequestBody String userDetails) throws JSONException {
@@ -118,19 +145,42 @@ public class FilesFoldersController {
     	files.setSharedWith(new ArrayList<>());
     	
     	filesFoldersService.addFileFolder(files);
-
-    	/*dropbox_userinfo user = new dropbox_userinfo();
-    	user.setUsername(username);
-    	user.setPassword(password);
-    	user.setFirst_name(first_name);
-    	user.setLast_name(last_name);
-    	
-    	userInfoService.addUser(user);*/
-    	
     	List<dropbox_userfiles> files1 = filesFoldersService.setFiles(parentId);
     	
     	
     	return new ResponseEntity(files1,HttpStatus.OK);
+    }
+    
+    @PostMapping(path="/createGroup",consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<?> createGroup(@RequestBody String userDetails) throws JSONException {
+        // This returns a JSON with the users
+		
+		JSONObject jsonObject = new JSONObject(userDetails);
+    	System.out.println("----------- CREATE GROUP Request Received from " + jsonObject);
+    	
+    	String username = jsonObject.getString("username");
+    	String group_name = jsonObject.getString("groupName");
+    	String isFile = jsonObject.getString("isFile");
+    	String parentId = jsonObject.getString("parentId");
+    	
+    	dropbox_usergroups group = new dropbox_usergroups();
+    	
+    	Long l = new Long(Calendar.getInstance().getTimeInMillis());
+        double id = (double)l;
+        System.out.println(id);
+    	
+    	group.setUsername(username);
+        group.setGroup_name(group_name);
+    	group.setIsFile(isFile);
+    	group.setParentId(parentId);
+    	group.setGroupId(id);
+    	group.setMembers(new ArrayList<>());
+    	
+    	userGroupsService.addUserGroup(group);
+    	List<dropbox_usergroups> group1 = userGroupsService.getGroup(parentId);
+    	
+    	
+    	return new ResponseEntity(group1,HttpStatus.OK);
     }
     
 	

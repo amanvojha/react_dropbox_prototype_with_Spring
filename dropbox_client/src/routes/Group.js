@@ -24,7 +24,7 @@ class Group extends Component {
         console.log('Pushing to the page ')
         this.props.history.push('/');
       }
-      this.props.getGroup();
+      this.props.getGroup(this.props.username);
 
       
 
@@ -161,7 +161,7 @@ class Group extends Component {
                                                           </div>
                                                           <div className="modal-footer">
                                                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                            <button type="button" className="btn btn-success" onClick={() => this.props.createGroup(document.getElementById('groupName').value,'0',username)}>Create</button>
+                                                            <button type="button" className="btn btn-success" onClick={() => this.props.createGroup(username,document.getElementById('groupName').value,'0',username)}>Create</button>
                                                           </div>
                                                         </div>
                                                       </div>
@@ -186,14 +186,14 @@ function mapDispatchToProps(dispatch) {
     return {
         logout : () => dispatch(logout()),
         upload : (username,file) => dispatch(upload(username,file)),
-        createGroup : (groupName,isFile,parentId) => dispatch(createGroup(groupName,isFile,parentId)),
+        createGroup : (username,groupName,isFile,parentId) => dispatch(createGroup(username,groupName,isFile,parentId)),
         getSharedFile: (username) => dispatch(getSharedFile(username)),
         setStar: (username,file_id) => dispatch(setStar(username,file_id)),
         getStar: (username) => dispatch(getStar(username)),
         download: (username,file_name) => dispatch(download(username,file_name)),
         setFolder : (fileId) => dispatch(setFolder(fileId)),
         checkAuth: () => dispatch(checkAuth()),
-        getGroup: () => dispatch(getGroup())
+        getGroup: (username) => dispatch(getGroup(username))
         
     };
 }

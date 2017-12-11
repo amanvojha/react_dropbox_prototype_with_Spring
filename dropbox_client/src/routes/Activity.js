@@ -26,7 +26,7 @@ class Activity extends Component {
         console.log('Pushing to the page ')
         this.props.history.push('/');
       }
-      this.props.getActivity();
+      this.props.getActivity(this.props.username);
       //Bringing Uploaded files
       //this.props.setHomeFiles(this.props.username);
       //this.props.getStar(this.props.username);
@@ -139,7 +139,7 @@ function mapDispatchToProps(dispatch) {
     
     return {
         logout : () => dispatch(logout()),
-        getActivity: () => dispatch(getActivity()),
+        getActivity: (username) => dispatch(getActivity(username)),
         checkAuth: () => dispatch(checkAuth()),
         
     };
